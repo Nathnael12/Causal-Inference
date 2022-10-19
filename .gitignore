@@ -6,6 +6,12 @@ __pycache__/
 # C extensions
 *.so
 
+# untrack data according to the NDA
+data/
+
+#untrack junk files
+junk/
+
 # Distribution / packaging
 .Python
 build/
