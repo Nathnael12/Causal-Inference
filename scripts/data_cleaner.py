@@ -1,9 +1,17 @@
 import pandas as pd
 import re
+import sys
+import numpy as np
+from datetime import datetime,timedelta,date
+from geopy.geocoders import Nominatim
+from geopy import distance
+import holidays
 
 class DataCleaner:
     
     def __init__(self):
+        self.geolocator = Nominatim(user_agent="gokada")
+        self.nigeria_holiday= holidays.Nigeria()
         pass
 
     def get_uniqueness(self,df:pd.DataFrame):
@@ -26,11 +34,11 @@ class DataCleaner:
             df[column] = pd.to_datetime(df[column])
         return df
     
-    def calculate_duration(self,df:pd.DataFrame,start_col_name,end_col_name):
+    def calculate_duration(self,df:pd.DataFrame,start_col_name,end_col_name,duration_col_name:str="duration_min"):
         """
         calculate the time difference between two columns and append a new column (duration) to the dataframe
         """
-        df["duration"]= (df[end_col_name] - df[start_col_name]).astype('timedelta64[m]')
+        df[duration_col_name]= (df[end_col_name] - df[start_col_name]).astype('timedelta64[m]')
         return df
 
     def fill_missing(self,df: pd.DataFrame, method: str,columns: list) -> pd.DataFrame:
@@ -54,7 +62,7 @@ class DataCleaner:
         fill null/na start time values by subtracting duration from the end time
         """
         fill_values=  df.apply(lambda x:x[end_col] - pd.Timedelta(minutes=x[duration_col]),axis=1)
-        # return fill_values
+        
         df[start_col].fillna(fill_values,inplace=True)
         return df 
 
@@ -63,7 +71,7 @@ class DataCleaner:
         fill null/na end time values by adding duration to the start time
         """
         fill_values=  df.apply(lambda x:x[start_col] + pd.Timedelta(minutes=x[duration_col]),axis=1)
-        # return fill_values
+        
         df[end_col].fillna(fill_values,inplace=True)
         return df 
     def remove_space(self,df:pd.DataFrame):
@@ -72,3 +80,33 @@ class DataCleaner:
             no_space=re.sub(' +', '_', col.lower().strip())
             df.rename(columns={col:no_space},inplace=True)
         return df
+    def reverse_location(self,df:pd.DataFrame,lat_col_name:str="latitude",lng_col_name:str="longitude",loc_col_name:str="location"):
+        locator = self.geolocator
+        df[loc_col_name] = df.apply(lambda x:str(locator.reverse(str(x[lat_col_name])+","+str(x[lng_col_name]))),axis=1)
+        df[loc_col_name] = df[loc_col_name].apply(lambda x:self.spliter(x))
+        return df
+
+    def spliter(self,text:str,ind:int=-4):
+        try:
+            text=text.split(',')[ind]
+            return text 
+        except Exception:
+            if ind > 1:
+                print("Error occured")
+                sys.exit(1)
+            else:
+                ind+=1
+                return self.spliter(text,ind)
+
+    def find_distance(self,df:pd.DataFrame,distance_col_name:str="distance",trip_origin_col_name:str="trip_origin",trip_destination_col_name:str="trip_destination"):
+        df[distance_col_name]=df.apply(lambda x:distance.distance((x[trip_origin_col_name]), (x[trip_destination_col_name])).km,axis=1)
+        return df
+
+    def check_holiday(self,order_time:datetime):
+        return order_time.date() in self.nigeria_holiday
+
+    def add_holiday_feature(self,df:pd.DataFrame,date_col:str="trip_start_time"):
+        df["holiday"]=df[date_col].apply(lambda x:self.check_holiday(x))
+        return df
+
+
