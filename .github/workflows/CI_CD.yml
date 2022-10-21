@@ -1,6 +1,8 @@
 name: twitter-data-analysis
 
 on:
+  push:
+    branches: ['*']
   pull_request:
     branches: [main]
 
