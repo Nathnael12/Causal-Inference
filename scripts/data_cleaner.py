@@ -98,8 +98,11 @@ class DataCleaner:
                 ind+=1
                 return self.spliter(text,ind)
 
-    def find_distance(self,df:pd.DataFrame,distance_col_name:str="distance",trip_origin_col_name:str="trip_origin",trip_destination_col_name:str="trip_destination"):
-        df[distance_col_name]=df.apply(lambda x:distance.distance((x[trip_origin_col_name]), (x[trip_destination_col_name])).km,axis=1)
+    def find_distance(self,df:pd.DataFrame,distance_col_name:str="distance",trip_origin_col_names:list=["trip_origin"],trip_destination_col_names:list=["trip_destination"]):
+        if len(trip_destination_col_names) > 1 and len(trip_origin_col_names) > 1:
+            df[distance_col_name]=df.apply(lambda x:distance.distance((x[trip_origin_col_names[0]],x[trip_origin_col_names[1]]), (x[trip_destination_col_names[0]],x[trip_destination_col_names[1]])).km,axis=1)
+        else:
+            df[distance_col_name]=df.apply(lambda x:distance.distance((x[trip_origin_col_names[0]]), (x[trip_destination_col_names[0]])).km,axis=1)
         return df
 
     def check_holiday(self,order_time:datetime):
