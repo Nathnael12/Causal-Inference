@@ -5,6 +5,7 @@ import numpy as np
 from datetime import datetime,timedelta,date
 from geopy.geocoders import Nominatim
 from geopy import distance
+from sklearn.preprocessing import LabelEncoder
 import holidays
 
 class DataCleaner:
@@ -110,6 +111,44 @@ class DataCleaner:
 
     def add_holiday_feature(self,df:pd.DataFrame,date_col:str="trip_start_time"):
         df["holiday"]=df[date_col].apply(lambda x:self.check_holiday(x))
+        return df
+
+    def convert_to_datetime(self, df:pd.DataFrame,columns:list)->pd.DataFrame:
+        """
+        convert column to datetime
+        """        
+        for col in columns:
+            df[col] =  pd.to_datetime(df[col])
+        
+        return df
+    
+    def convert_to_numbers(self, df:pd.DataFrame,columns:list)->pd.DataFrame:
+        """
+        convert columns to numbers
+        """
+        
+        df[columns] = df[columns].apply(pd.to_numeric)
+        
+        return df
+        
+    def convert_to_string(self, df:pd.DataFrame,columns:list)->pd.DataFrame:
+        """
+        convert columns to numbers
+        """
+        for col in columns:
+            df[col] = df[col].astype(str)
+        
+        return df
+    
+    
+    def labe_encoder(df:pd.DataFrame,columns:list=None):
+        if columns == None:
+            columns = df.select_dtypes(exclude = ['number'])
+        le = LabelEncoder()
+
+        for col in columns:
+            df[col] = le.fit_transform(df[col])
+
         return df
 
 
