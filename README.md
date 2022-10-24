@@ -27,3 +27,45 @@ We will try to answer some interesting question that cannot be answered by just 
 • Had we changed the time requirements to drivers operating time in the past, what fractions of orders could have been completed?
 
 • If I increased the number of drivers by 10% cumulative per month, what fraction of orders can be completed?
+
+# Folder Structure
+
+## doc
+Here you will find some generated documents from this project such as screenshots and information about structural model of the causalnex network
+
+## notebooks
+Here you will find three separate notebooks for the following purposes
+- EDA for dataset 1 (Information about compoleted orders)
+- EDA for dataset 2 (Information about drivers at the time of request)
+- Causal Inference and Causal Graphs
+
+## Some screenshots from the EDA
+Locations of origin for requests
+![](./doc/map%20I.png)
+
+Locations of destination for requests
+![](./doc/map%20II.png)
+
+## scripts
+Here you will find methods and functions to ease your data cleaning and data extraction task
+
+## tests
+unit tests for the methods found in scripts directory
+
+# Instalation
+
+```bash
+
+git clone https://github.com/Nathnael12/Causal-Inference.git
+cd Causal-Inference
+pip install -r requirements.txt
+
+```
+
+# Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
