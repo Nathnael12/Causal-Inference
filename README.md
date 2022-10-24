@@ -30,6 +30,9 @@ We will try to answer some interesting question that cannot be answered by just 
 
 # Folder Structure
 
+## doc
+Here you will find some generated documents from this project such as screenshots and information about structural model of the causalnex network
+
 ## notebooks
 Here you will find three separate notebooks for the following purposes
 - EDA for dataset 1 (Information about compoleted orders)
