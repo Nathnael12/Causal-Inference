@@ -1,0 +1,18 @@
+strict digraph  {
+driver_action;
+holiday;
+date;
+hour;
+distance_diff;
+driver_loc;
+request_loc;
+date -> driver_loc  [origin=learned, weight="0.7052004219125685"];
+date -> driver_action  [origin=unknown];
+date -> holiday  [origin=unknown];
+hour -> driver_loc  [origin=learned, weight="1.615863572090129"];
+hour -> request_loc  [origin=learned, weight="1.1891350238511398"];
+hour -> driver_action  [origin=unknown];
+distance_diff -> driver_action  [origin=unknown];
+driver_loc -> distance_diff  [origin=unknown];
+request_loc -> distance_diff  [origin=unknown];
+}
